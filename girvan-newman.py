@@ -1,4 +1,8 @@
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+import pandas as pd
+import numpy as np
 import networkx as nx
 from networkx.algorithms.community.centrality import girvan_newman
 import csv
@@ -6,20 +10,19 @@ import timeit
 
 start = timeit.default_timer()
 
-input_file = "amazon_ungraph_new_sorted.txt"
-with open(input_file, "r") as read_obj:
-    csv_reader = csv.reader(read_obj, quoting=csv.QUOTE_NONNUMERIC, delimiter=',')
-    list_of_rows = [[int(row[0]), int(row[1])] for row in csv_reader if row]
+dataset_path = "data/amazon_ungraph_new.txt"
+# Load the dataset
+dataset = pd.read_csv(dataset_path, delimiter=' ', names=["from", "to", "characteristics"])
 
-G = nx.Graph()
-G.add_edges_from(list_of_rows)
+# Create a graph object from the dataset
+G = nx.from_pandas_edgelist(dataset, source="from", target="to")
 
 print(G)
 
 communities = girvan_newman(G)
 
 f = open("result_girvan-newman.txt", "w")
-f.write(f"Input file: {input_file}\n")
+f.write(f"Input file: {dataset_path}\n")
 f.write(f"Graph specification: {G}\n\n")
 
 num_com = 0
