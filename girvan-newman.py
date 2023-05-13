@@ -6,15 +6,14 @@ import numpy as np
 import networkx as nx
 from networkx.algorithms.community.centrality import girvan_newman
 import csv
-import timeit
+import time
 from ultis import NMI_evaluation
-
-start = timeit.default_timer()
 
 dataset_path = "data/amazon_ungraph_new.txt"
 # Load the dataset
 dataset = pd.read_csv(dataset_path, delimiter=' ', names=["from", "to", "characteristics"])
 
+start = time.time()
 # Create a graph object from the dataset
 G = nx.from_pandas_edgelist(dataset, source="from", target="to")
 
@@ -22,9 +21,11 @@ print(G)
 
 communities = girvan_newman(G)
 
+
 f = open("result_girvan-newman.txt", "w")
 f.write(f"Input file: {dataset_path}\n")
 f.write(f"Graph specification: {G}\n\n")
+
 
 num_com = 0
 partition = {}
@@ -34,7 +35,8 @@ for com in next(communities):
         partition[int(i)] = num_com
     f.write(f"Community {num_com}: {com}\n")
 
-stop = timeit.default_timer()
+stop = time.time()
+
 
 f.write(f"Runtime: {stop - start} s")
 
