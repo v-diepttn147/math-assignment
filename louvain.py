@@ -1,6 +1,7 @@
-import community
+from community import community_louvain
 import networkx as nx
 import pandas as pd
+from utils import NMI_evaluation
 
 if __name__ == "__main__":
 
@@ -13,8 +14,12 @@ if __name__ == "__main__":
     graph = nx.from_pandas_edgelist(dataset, source="from", target="to")
     
     # Apply the Louvain algorithm
-    partition = community.best_partition(graph)
+    partition = community_louvain.best_partition(graph)
 
     # Print the identified communities
     for node, community_id in partition.items():
         print(f"Node {node} belongs to community {community_id}")
+
+    print("="*20)
+    print("RUN EVALpip UATION")
+    print("NMI score: ",NMI_evaluation(partition))
