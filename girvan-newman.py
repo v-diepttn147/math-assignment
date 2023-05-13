@@ -7,6 +7,7 @@ import networkx as nx
 from networkx.algorithms.community.centrality import girvan_newman
 import csv
 import timeit
+from ultis import NMI_evaluation
 
 start = timeit.default_timer()
 
@@ -26,8 +27,11 @@ f.write(f"Input file: {dataset_path}\n")
 f.write(f"Graph specification: {G}\n\n")
 
 num_com = 0
+partition = {}
 for com in next(communities):
     num_com += 1
+    for i in com:
+        partition[int(i)] = num_com
     f.write(f"Community {num_com}: {com}\n")
 
 stop = timeit.default_timer()
@@ -38,3 +42,7 @@ f.close()
 
 print(f"Number of communities using Girvan-Newman: {num_com}")
 print(f"Runtime: {stop - start} s")
+
+print("="*20)
+print("RUN EVALUATION")
+print("NMI score: ",NMI_evaluation(partition))
